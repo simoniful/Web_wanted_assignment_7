@@ -45,14 +45,14 @@ export const useTodo = () => {
   };
 
   const loadData = () => {
-    let data = localStorage.getItem('todos');
-    if (data === undefined) data = '';
-    initialTodos = JSON.parse(data!);
+    let data: any = localStorage.getItem('todos');
+    if (data === undefined || data === null) {
+      data = JSON.stringify([]);
+    }
+    initialTodos = JSON.parse(data);
     if (initialTodos && initialTodos.length >= 1) {
       setNextIdState(initialTodos.length);
-      initialTodos = initialTodos.map((todo: Itodo, index: number) => {
-        return { ...todo, id: index };
-      });
+      initialTodos = initialTodos.map((todo: Itodo, index: number) => ({ ...todo, id: index }));
     }
     setTodoState(initialTodos);
   };
