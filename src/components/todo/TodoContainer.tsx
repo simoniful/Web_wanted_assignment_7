@@ -8,7 +8,6 @@ import TodoFooter from './template/footer/TodoFooter';
 
 const TodoContainer = () => {
   const { todoState, nextIdState, incrementNextId, toggleTodo, removeTodo, createTodo } = useTodo();
-  console.log(todoState, nextIdState);
   return (
     <>
       <TodoTemplate>
