@@ -5,7 +5,7 @@ import { Modal, DatePicker } from 'antd';
 import { Itodo } from 'components/todo/TodoService';
 import moment from 'moment';
 
-const CircleButton = styled.button<{ open: boolean }>`
+const CircleButton = styled.button`
   background: #33bb77;
   width: 50px;
   height: 50px;
@@ -58,15 +58,13 @@ interface TodoCreateProps {
 }
 
 const TodoCreate = ({ nextId, createTodo, incrementNextId }: TodoCreateProps) => {
-  const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
-  const [dueDate, setDueDate] = useState('');
+  const [dueDate, setDueDate] = useState(moment().format('YYYY-MM-DD'));
 
-  const handleToggle = () => setOpen(!open);
   const handleSelectDate = (date: any, dateString: string) => setDueDate(dateString);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value);
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // 새로고침 방지
+    e.preventDefault();
     if (!value) {
       Modal.error({
         title: '할 일을 작성해주세요.',
@@ -80,9 +78,8 @@ const TodoCreate = ({ nextId, createTodo, incrementNextId }: TodoCreateProps) =>
       done: false,
       date: dueDate,
     });
-    incrementNextId(); // nextId 하나 증가
-    setValue(''); // input 초기화
-    setOpen(false); // open 닫기
+    incrementNextId();
+    setValue('');
   };
 
   return (
@@ -90,8 +87,8 @@ const TodoCreate = ({ nextId, createTodo, incrementNextId }: TodoCreateProps) =>
       <InsertFormPositioner>
         <InsertForm onSubmit={handleSubmit}>
           <Input autoFocus placeholder="What's need to be done?" onChange={handleChange} value={value} />
-          <DatePicker onChange={handleSelectDate} defaultValue={moment(new Date(), 'YYYY-MM-DD')} />
-          <CircleButton onClick={handleToggle} open={open}>
+          <DatePicker onChange={handleSelectDate} defaultValue={moment()} />
+          <CircleButton>
             <PlusCircleOutlined />
           </CircleButton>
         </InsertForm>

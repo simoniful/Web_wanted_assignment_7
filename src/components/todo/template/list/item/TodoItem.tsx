@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
 import { CheckOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { Modal } from 'antd';
@@ -66,11 +66,9 @@ interface TodoItemProps {
 }
 
 const TodoItem = ({ toggleTodo, removeTodo, todo }: TodoItemProps) => {
-  const [done, setDone] = useState<boolean>(false);
   const { confirm } = Modal;
 
   const handleToggle = (id: number) => {
-    setDone(!done);
     toggleTodo(id);
     return '';
   };
@@ -94,10 +92,10 @@ const TodoItem = ({ toggleTodo, removeTodo, todo }: TodoItemProps) => {
 
   return (
     <TodoItemBlock>
-      <CheckCircle done={done} onClick={() => handleToggle(todo.id)}>
-        {done && <CheckOutlined />}
+      <CheckCircle done={todo.done} onClick={() => handleToggle(todo.id)}>
+        {todo.done && <CheckOutlined />}
       </CheckCircle>
-      <Text done={done}>
+      <Text done={todo.done}>
         {todo.text}
         <span> {todo.date}</span>
       </Text>
