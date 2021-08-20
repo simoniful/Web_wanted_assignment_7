@@ -61,12 +61,6 @@ export const useTodo = () => {
     localStorage.setItem('todos', JSON.stringify(todoState));
   };
 
-  const updateTodo = () => {
-    const newTodo = todoState.map((todo: Itodo, index: number) => ({ ...todo, id: index }));
-    setTodoState(newTodo);
-    setNextIdState(newTodo.length);
-  };
-
   return {
     todoState,
     nextIdState,
@@ -74,6 +68,5 @@ export const useTodo = () => {
     toggleTodo,
     removeTodo,
     createTodo,
-    updateTodo,
   };
 };
