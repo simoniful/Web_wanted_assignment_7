@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
-import { CheckOutlined, DeleteOutlined } from '@ant-design/icons';
+import { CheckOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { Modal } from 'antd';
 import { Itodo } from 'components/todo/TodoService';
 
 const Remove = styled.div`
@@ -52,6 +53,10 @@ const Text = styled.div<{ done: boolean }>`
       color: #ced4da;
       text-decoration: line-through;
     `}
+  span {
+    font-size: 10px;
+    padding-left: 5px;
+  }
 `;
 
 interface TodoItemProps {
@@ -61,22 +66,42 @@ interface TodoItemProps {
 }
 
 const TodoItem = ({ toggleTodo, removeTodo, todo }: TodoItemProps) => {
-  const done = false;
-  const handleToggle = () => {
+  const [done, setDone] = useState<boolean>(false);
+  const { confirm } = Modal;
+
+  const handleToggle = (id: number) => {
+    setDone(!done);
+    toggleTodo(id);
     return '';
   };
 
-  const handleRemove = () => {
-    return '';
+  const handleRemove = (id: number, todo: Itodo) => {
+    confirm({
+      title: 'Are you sure delete this task?',
+      icon: <ExclamationCircleOutlined />,
+      content: `${todo.text}(기한: ${todo.date}, 완료여부: ${todo.done ? '완료' : '미완'})`,
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        removeTodo(id);
+      },
+      onCancel() {
+        return null;
+      },
+    });
   };
 
   return (
     <TodoItemBlock>
-      <CheckCircle done={done} onClick={handleToggle}>
+      <CheckCircle done={done} onClick={() => handleToggle(todo.id)}>
         {done && <CheckOutlined />}
       </CheckCircle>
-      <Text done={done}>{todo.text}</Text>
-      <Remove onClick={handleRemove}>
+      <Text done={done}>
+        {todo.text}
+        <span> {todo.date}</span>
+      </Text>
+      <Remove onClick={() => handleRemove(todo.id, todo)}>
         <DeleteOutlined />
       </Remove>
     </TodoItemBlock>

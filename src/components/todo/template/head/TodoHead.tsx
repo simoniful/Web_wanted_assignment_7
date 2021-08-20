@@ -30,6 +30,7 @@ const TimeText = styled.div`
 `;
 
 const TodoHead = () => {
+  let timer: any = null;
   const [time, setTime] = useState<string>('');
   const [day, setDay] = useState<string>('');
   const [date, setDate] = useState<string>('');
@@ -45,9 +46,9 @@ const TodoHead = () => {
   };
 
   useEffect(() => {
-    setInterval(getTime, 1000);
+    timer = setInterval(getTime, 1000);
     return () => {
-      setInterval(getTime, 1000);
+      clearInterval(timer);
     };
   }, []);
 

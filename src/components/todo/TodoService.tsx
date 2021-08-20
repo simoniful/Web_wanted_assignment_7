@@ -4,13 +4,14 @@ export interface Itodo {
   id: number;
   text: string;
   done: boolean;
+  date: string;
 }
 
 let initialTodos: Itodo[] = [];
 
 export const useTodo = () => {
   const [todoState, setTodoState] = useState(initialTodos);
-  let nextIdState = 0;
+  const [nextIdState, setNextIdState] = useState(0);
 
   useEffect(() => {
     loadData();
@@ -21,19 +22,20 @@ export const useTodo = () => {
   }, [todoState]);
 
   const incrementNextId = () => {
-    nextIdState = nextIdState + 1;
+    setNextIdState(nextIdState + 1);
   };
 
   const toggleTodo = (id: number) => {
-    // @TODO
+    setTodoState((prevState) => prevState.map((todo) => (todo.id === id ? { ...todo, done: !todo.done } : todo)));
   };
 
   const removeTodo = (id: number) => {
-    setTodoState((prevState) => prevState.filter((todo: Itodo) => todo.id === id));
+    setTodoState((prevState) => prevState.filter((todo: Itodo) => todo.id !== id).map((todo: Itodo, index: number) => ({ ...todo, id: index })));
+    setNextIdState(nextIdState - 1);
   };
 
   const createTodo = (todo: Itodo) => {
-    const nextId = todoState.length + 1;
+    const nextId = todoState.length;
     setTodoState((prevState) =>
       prevState.concat({
         ...todo,
@@ -47,13 +49,22 @@ export const useTodo = () => {
     if (data === undefined) data = '';
     initialTodos = JSON.parse(data!);
     if (initialTodos && initialTodos.length >= 1) {
-      incrementNextId();
+      setNextIdState(initialTodos.length);
+      initialTodos = initialTodos.map((todo: Itodo, index: number) => {
+        return { ...todo, id: index };
+      });
     }
     setTodoState(initialTodos);
   };
 
   const saveData = () => {
     localStorage.setItem('todos', JSON.stringify(todoState));
+  };
+
+  const updateTodo = () => {
+    const newTodo = todoState.map((todo: Itodo, index: number) => ({ ...todo, id: index }));
+    setTodoState(newTodo);
+    setNextIdState(newTodo.length);
   };
 
   return {
@@ -63,5 +74,6 @@ export const useTodo = () => {
     toggleTodo,
     removeTodo,
     createTodo,
+    updateTodo,
   };
 };
